@@ -130,10 +130,10 @@ export function FloatingChatBubble() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end print:hidden overflow-x-hidden">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end print:hidden pointer-events-none">
       {/* 1. Teaser Message Popup */}
       {showTeaser && !isOpen && (
-        <div className="mb-3 animate-in fade-in slide-in-from-bottom-3 duration-300 relative group max-w-xs">
+        <div className="mb-3 animate-in fade-in slide-in-from-bottom-3 duration-300 relative group max-w-xs pointer-events-auto">
           <div
             onClick={() => setIsOpen(true)}
             className="cursor-pointer bg-card/95 backdrop-blur-md text-foreground px-4 py-3 rounded-2xl shadow-xl border border-primary/30 hover:border-primary/60 transition-all flex items-center gap-3"
@@ -169,7 +169,7 @@ export function FloatingChatBubble() {
 
       {/* 2. Floating Chat Window */}
       {isOpen && (
-        <div className="mb-3 w-[350px] sm:w-[390px] h-[520px] max-h-[82vh] bg-card/98 backdrop-blur-xl border border-border/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="mb-3 w-[350px] sm:w-[390px] h-[520px] max-h-[82vh] bg-card/98 backdrop-blur-xl border border-border/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 pointer-events-auto">
           {/* Header */}
           <div className="bg-muted/60 border-b border-border/50 px-4 py-3 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-2.5">
@@ -340,9 +340,9 @@ export function FloatingChatBubble() {
         }}
         aria-label="Open T800 AI Mentor"
         className={cn(
-          "relative flex h-14 w-14 items-center justify-center rounded-2xl shadow-xl transition-all duration-300 group",
+          "relative flex h-14 w-14 items-center justify-center rounded-2xl shadow-xl transition-all duration-200 group pointer-events-auto",
           "bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white",
-          "hover:scale-105 hover:shadow-blue-500/25 active:scale-95",
+          "hover:brightness-110 hover:shadow-blue-500/30 active:scale-95",
           isOpen && "rotate-90 bg-muted text-foreground border border-border"
         )}
       >
@@ -350,10 +350,10 @@ export function FloatingChatBubble() {
           <X className="h-6 w-6" />
         ) : (
           <>
-            <Bot className="h-7 w-7 transition-transform group-hover:scale-110" />
-            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+            <Bot className="h-7 w-7 transition-transform group-hover:scale-105" />
+            <span className="absolute top-0 right-0 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-background" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-background" />
             </span>
           </>
         )}
