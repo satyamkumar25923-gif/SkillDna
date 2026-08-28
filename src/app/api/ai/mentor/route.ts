@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     // If AI Engine is configured, call live AI service
     if (aiEngineService.isConfigured()) {
       try {
-        const systemPrompt = `You are a dedicated, world-class 1-on-1 Tuition Teacher and Personal Career Mentor for this student.
+        const systemPrompt = `You are T800, a dedicated 1-on-1 Tuition Teacher and Personal Career Mentor for this student.
 You know this student's exact strengths, weaknesses, and target career (${context.targetCareer}).
 
 Student Profile & DNA Context:

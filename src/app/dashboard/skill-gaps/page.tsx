@@ -8,10 +8,10 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn, getProficiencyColor } from "@/lib/utils"
-import { 
-  Search, 
-  AlertTriangle, 
-  Target, 
+import {
+  Search,
+  AlertTriangle,
+  Target,
   TrendingUp,
   ArrowRight,
   BookOpen,
@@ -29,7 +29,7 @@ const gaps = [
   { skill: "Machine Learning", current: 43, required: 80, type: "critical", reason: "Core requirement for AI Engineer roles", effort: "High (6-8 months)", resources: ["Deep Learning Specialization", "Fast.ai Course", "ML Projects"] },
   { skill: "Data Structures & Algorithms", current: 61, required: 75, type: "major", reason: "Essential for technical interviews", effort: "Medium (3-4 months)", resources: ["LeetCode 150", "NeetCode Roadmap", "System Design Primer"] },
   { skill: "Cloud Fundamentals", current: 25, required: 60, type: "major", reason: "Required for production ML deployment", effort: "Medium (2-3 months)", resources: ["AWS Solutions Architect", "GCP Cloud Engineer", "Terraform Basics"] },
-  { skill: "System Design", current: 30, required: 65, type: "moderate", reason: "Needed for senior-level positions", effort: "Medium (3-4 months)", resources: ["Designing Data-Intensive Apps", "System Design Interview", "Alex Xu Course"] },
+  { skill: "System Design", current: 30, required: 65, type: "moderate", reason: "Needed for senior-level positions", effort: "Medium (3-4 months)", resources: ["Designing Data-Intensive Apps", "System Design Interview", "T800 Xu Course"] },
   { skill: "Git/GitHub", current: 52, required: 70, type: "moderate", reason: "Daily workflow proficiency expected", effort: "Low (1-2 months)", resources: ["Advanced Git", "GitHub Actions", "Open Source Contribution"] },
   { skill: "Web Development", current: 72, required: 75, type: "minor", reason: "Full-stack capability for demos", effort: "Low (1 month)", resources: ["Next.js Advanced", "React Patterns", "TypeScript Deep Dive"] },
   { skill: "Programming", current: 82, required: 80, type: "strong", reason: "Exceeds requirement", effort: "Maintain", resources: ["Code Review Practice", "Mentoring"] },

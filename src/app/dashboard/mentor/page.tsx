@@ -85,7 +85,7 @@ interface ChatSession {
 
 const DEFAULT_WELCOME_MSG: MessageItem = {
   role: "assistant",
-  content: "Hey there! 🎓 I'm Alex, your 1-on-1 AI Tuition Teacher & Career Mentor. I have your full Skill DNA profile right in front of me.\n\nWhether you want to break down a tough ML concept with simple analogies, review your PyTorch roadmap, or practice interview questions—I'm right here with you. What would you like to explore today?",
+  content: "Hey there! I'm **T800**, your personal AI Mentor & Career Guide. I have your full Skill DNA profile loaded.\n\nWhether you want to break down a tough ML concept with simple analogies, review your PyTorch roadmap, or practice interview questions—I'm right here with you. What would you like to explore today?",
 }
 
 const STORAGE_KEY = "skilldna_mentor_sessions_v1"
@@ -363,18 +363,15 @@ export default function AIPromptPage() {
                   <CardHeader className="border-b border-border/50 py-3 px-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 text-lg">
-                          🎓
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
+                          <Bot className="h-5 w-5" />
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <CardTitle className="text-sm font-semibold">Alex • 1-on-1 AI Tutor</CardTitle>
-                            <span className="flex items-center gap-1 text-[11px] text-emerald-500 font-medium">
-                              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                              Active
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-muted-foreground">Tuition Teacher • Skill DNA Connected</p>
+                        <div className="flex items-center gap-2">
+                          <CardTitle className="text-sm font-semibold">T800</CardTitle>
+                          <span className="flex items-center gap-1 text-[11px] text-emerald-500 font-medium">
+                            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                            Active
+                          </span>
                         </div>
                       </div>
 

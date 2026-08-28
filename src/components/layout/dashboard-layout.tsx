@@ -7,16 +7,16 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { 
-  LayoutDashboard, 
-  Dna, 
-  Search, 
-  MapPin, 
-  Briefcase, 
-  Code, 
-  Newspaper, 
-  Bot, 
-  TrendingUp, 
+import {
+  LayoutDashboard,
+  Dna,
+  Search,
+  MapPin,
+  Briefcase,
+  Code,
+  Newspaper,
+  Bot,
+  TrendingUp,
   Settings,
   Bell,
   ChevronLeft,
@@ -48,7 +48,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  
+
   const session = {
     user: {
       name: "Satyam Kumar",
