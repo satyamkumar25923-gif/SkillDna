@@ -28,7 +28,12 @@ import {
   Crown,
   Menu,
   X,
-  LogOut
+  LogOut,
+  MessageSquare,
+  Award,
+  Briefcase as BriefcaseIcon,
+  CheckCircle,
+  Clock
 } from "lucide-react"
 
 const navigation = [
@@ -247,10 +252,70 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Bell className="h-5 w-5" />
+                    <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-72 p-2">
+                  <DropdownMenuLabel className="font-semibold px-2 py-1">Notifications</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="p-3 hover:bg-muted/50">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500">
+                        <MessageSquare className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium">New mentor message</p>
+                        <p className="text-xs text-muted-foreground">Your AI mentor replied to your question</p>
+                        <p className="text-xs text-muted-foreground mt-1">2 minutes ago</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="p-3 hover:bg-muted/50">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/10 text-green-500">
+                        <CheckCircle className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium">Assessment complete</p>
+                        <p className="text-xs text-muted-foreground">Your ML skill assessment is ready to review</p>
+                        <p className="text-xs text-muted-foreground mt-1">1 hour ago</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="p-3 hover:bg-muted/50">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10 text-purple-500">
+                        <Award className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium">Achievement unlocked</p>
+                        <p className="text-xs text-muted-foreground">Week 3 milestone completed!</p>
+                        <p className="text-xs text-muted-foreground mt-1">3 hours ago</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="p-3 hover:bg-muted/50">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+                        <BriefcaseIcon className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium">New job match</p>
+                        <p className="text-xs text-muted-foreground">AI Engineer role at TechCorp matches your profile</p>
+                        <p className="text-xs text-muted-foreground mt-1">Yesterday</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="p-2 text-center text-sm text-primary hover:bg-primary/10" asChild>
+                    <Link href="/dashboard/notifications" className="w-full">View all notifications</Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               <Link href="/dashboard/subscription">
                 <Button variant="premium" size="sm" className="hidden sm:flex items-center gap-2">
