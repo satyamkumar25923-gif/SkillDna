@@ -7,19 +7,19 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
-import { 
-  Crown, 
-  Building2, 
-  Lock, 
-  Unlock, 
-  Check, 
-  X, 
-  Sparkles, 
-  Brain, 
-  Code, 
-  Briefcase, 
-  TrendingUp, 
-  Target, 
+import {
+  Crown,
+  Building2,
+  Lock,
+  Unlock,
+  Check,
+  X,
+  Sparkles,
+  Brain,
+  Code,
+  Briefcase,
+  TrendingUp,
+  Target,
   BookOpen,
   Users,
   Shield,
@@ -362,9 +362,9 @@ function PlanCard({ plan, selected, onSelect, onUpgrade, isProcessing }: any) {
         </ul>
       </CardContent>
       <CardFooter className="pt-0">
-        <Button 
-          variant={plan.ctaVariant} 
-          className="w-full" 
+        <Button
+          variant={plan.ctaVariant}
+          className="w-full"
           onClick={() => { onSelect(); onUpgrade(plan.id); }}
           disabled={plan.id === "free" || isProcessing}
         >
@@ -422,8 +422,8 @@ function FAQItem({ faq }: { faq: { q: string; a: string } }) {
   const [open, setOpen] = useState(false)
   return (
     <div className="border border-border/50 rounded-lg overflow-hidden">
-      <button 
-        onClick={() => setOpen(!open)} 
+      <button
+        onClick={() => setOpen(!open)}
         className="w-full p-4 flex items-center justify-between text-left"
       >
         <span className="font-medium">{faq.q}</span>

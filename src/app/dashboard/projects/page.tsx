@@ -8,10 +8,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { 
-  Code, 
-  GitBranch, 
-  FileCode, 
+import {
+  Code,
+  GitBranch,
+  FileCode,
   Star,
   ArrowUpRight,
   Brain,
@@ -65,7 +65,7 @@ export default function ProjectsPage() {
                 <ProjectCard key={project.id} project={project} onAnalyze={() => setShowAnalysis(project.id)} />
               ))}
             </div>
-            
+
             {showAnalysis && (
               <ProjectAnalysisModal project={projects.find(p => p.id === showAnalysis)!} onClose={() => setShowAnalysis(null)} />
             )}
@@ -191,7 +191,7 @@ function ProjectAnalysisModal({ project, onClose }: { project: any; onClose: () 
               </div>
             ))}
           </div>
-          
+
           <div className="border-t border-border/50 pt-6">
             <h3 className="font-semibold mb-4">Strengths</h3>
             <div className="flex flex-wrap gap-2">
@@ -266,23 +266,23 @@ function ProjectAnalyzerForm({ onComplete }: { onComplete: () => void }) {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Project Name</label>
-              <Input placeholder="e.g., AI Code Reviewer" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required />
+              <Input placeholder="e.g., AI Code Reviewer" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">GitHub Repository URL</label>
-              <Input placeholder="https://github.com/username/repo" value={formData.githubUrl} onChange={(e) => setFormData({...formData, githubUrl: e.target.value})} />
+              <Input placeholder="https://github.com/username/repo" value={formData.githubUrl} onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })} />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Tech Stack (comma separated)</label>
-              <Input placeholder="Python, FastAPI, PostgreSQL, Docker" value={formData.techStack} onChange={(e) => setFormData({...formData, techStack: e.target.value})} />
+              <Input placeholder="Python, FastAPI, PostgreSQL, Docker" value={formData.techStack} onChange={(e) => setFormData({ ...formData, techStack: e.target.value })} />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Project Description</label>
-              <Textarea placeholder="Describe your project, its purpose, and key features..." value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} rows={4} required />
+              <Textarea placeholder="Describe your project, its purpose, and key features..." value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={4} required />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">README Content (optional)</label>
-              <Textarea placeholder="Paste your README.md content for deeper analysis..." value={formData.readme} onChange={(e) => setFormData({...formData, readme: e.target.value})} rows={6} />
+              <Textarea placeholder="Paste your README.md content for deeper analysis..." value={formData.readme} onChange={(e) => setFormData({ ...formData, readme: e.target.value })} rows={6} />
             </div>
             <Button type="submit" variant="premium" className="w-full" disabled={isAnalyzing}>
               <Sparkles className="mr-2 h-4 w-4" />

@@ -1,4 +1,4 @@
-import { NemotronService, AIResponse } from "./nemotron"
+import { AIEngineService, AIResponse } from "./ai-client"
 
 export interface SkillExtractionResult {
   skills: Array<{
@@ -96,10 +96,10 @@ export interface MentorResponse {
 }
 
 class AIService {
-  private nemotron: NemotronService
+  private engine: AIEngineService
 
   constructor() {
-    this.nemotron = new NemotronService()
+    this.engine = new AIEngineService()
   }
 
   async extractSkillsFromResume(resumeText: string): Promise<AIResponse<SkillExtractionResult>> {
@@ -126,7 +126,7 @@ Categories: Programming, Data Structures & Algorithms, Machine Learning, Web Dev
 Only include skills that have clear evidence in the resume.
 `
 
-    return this.nemotron.generateStructured<SkillExtractionResult>(prompt, {
+    return this.engine.generateStructured<SkillExtractionResult>(prompt, {
       temperature: 0.3,
       maxTokens: 2000,
     })
@@ -166,7 +166,7 @@ Return JSON in this exact format:
 Be specific and actionable. Consider industry demand and career relevance.
 `
 
-    return this.nemotron.generateStructured<SkillGapAnalysisResult>(prompt, {
+    return this.engine.generateStructured<SkillGapAnalysisResult>(prompt, {
       temperature: 0.4,
       maxTokens: 3000,
     })
@@ -208,7 +208,7 @@ Return JSON in this exact format:
 Be specific and actionable. Don't give vague feedback.
 `
 
-    return this.nemotron.generateStructured<ProjectAnalysisResult>(prompt, {
+    return this.engine.generateStructured<ProjectAnalysisResult>(prompt, {
       temperature: 0.4,
       maxTokens: 3000,
     })
@@ -248,7 +248,7 @@ Return JSON in this exact format:
 Focus on actionable insights for this specific job application.
 `
 
-    return this.nemotron.generateStructured<JobAnalysisResult>(prompt, {
+    return this.engine.generateStructured<JobAnalysisResult>(prompt, {
       temperature: 0.4,
       maxTokens: 3000,
     })
@@ -288,7 +288,7 @@ Return JSON in this exact format:
 Create a progressive roadmap that builds on existing skills. Skip beginner content for skills the student already knows. Make it adaptive and practical.
 `
 
-    return this.nemotron.generateStructured<RoadmapGenerationResult>(prompt, {
+    return this.engine.generateStructured<RoadmapGenerationResult>(prompt, {
       temperature: 0.5,
       maxTokens: 4000,
     })
@@ -334,7 +334,7 @@ Return JSON in this exact format:
 Make the "whyThisMatters" highly personalized to this specific student.
 `
 
-    return this.nemotron.generateStructured<TechNewsAnalysisResult>(prompt, {
+    return this.engine.generateStructured<TechNewsAnalysisResult>(prompt, {
       temperature: 0.5,
       maxTokens: 2500,
     })
@@ -374,7 +374,7 @@ Return JSON in this exact format:
 Reference their actual skills, gaps, and roadmap. Don't give generic advice.
 `
 
-    return this.nemotron.generateStructured<MentorResponse>(prompt, {
+    return this.engine.generateStructured<MentorResponse>(prompt, {
       temperature: 0.6,
       maxTokens: 2500,
     })
@@ -416,7 +416,7 @@ Return JSON in this exact format:
 Be realistic and specific about skill development from projects.
 `
 
-    return this.nemotron.generateStructured(prompt, {
+    return this.engine.generateStructured(prompt, {
       temperature: 0.5,
       maxTokens: 2000,
     })

@@ -1,4 +1,4 @@
-import { AIResponse } from "./nemotron"
+import { AIResponse } from "./ai-client"
 import type {
   SkillExtractionResult,
   SkillGapAnalysisResult,
