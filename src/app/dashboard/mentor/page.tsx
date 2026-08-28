@@ -7,29 +7,30 @@ import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { 
-  Bot, 
-  Sparkles, 
-  Brain, 
-  Target, 
-  BookOpen, 
-  Code, 
-  Briefcase, 
-  TrendingUp, 
-  Settings, 
-  Copy, 
-  ThumbsUp, 
-  ThumbsDown, 
-  Plus, 
-  History, 
+import {
+  Bot,
+  Sparkles,
+  Brain,
+  Target,
+  BookOpen,
+  Code,
+  Briefcase,
+  TrendingUp,
+  Settings,
+  Copy,
+  ThumbsUp,
+  ThumbsDown,
+  Plus,
+  History,
   Send,
-  AlertTriangle, 
-  Award, 
-  Calendar, 
+  AlertTriangle,
+  Award,
+  Calendar,
   User as UserIcon,
   Check,
   Trash2,
-  Clock
+  Clock,
+  GraduationCap
 } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer"
@@ -84,14 +85,23 @@ interface ChatSession {
 
 const DEFAULT_WELCOME_MSG: MessageItem = {
   role: "assistant",
-  content: "Hi! I'm your AI Career Mentor. I have full context of your Skill DNA and can help you build custom learning roadmaps, prepare for technical interviews, architect portfolio projects, and bridge critical skill gaps. What would you like to explore today?",
+  content: "Hey there! 🎓 I'm Alex, your 1-on-1 AI Tuition Teacher & Career Mentor. I have your full Skill DNA profile right in front of me.\n\nWhether you want to break down a tough ML concept with simple analogies, review your PyTorch roadmap, or practice interview questions—I'm right here with you. What would you like to explore today?",
 }
 
 const STORAGE_KEY = "skilldna_mentor_sessions_v1"
 const ACTIVE_SESSION_KEY = "skilldna_mentor_active_id"
+const PERSONA_STORAGE_KEY = "skilldna_mentor_persona"
+
+export const PERSONAS = [
+  { id: "Tuition Teacher", label: "Tuition Teacher", icon: "🎓", desc: "Warm, patient, intuitive explanations with analogies" },
+  { id: "Industry Coach", label: "Industry Coach", icon: "💼", desc: "Direct, high-accountability, focused on landing the role" },
+  { id: "Socratic Guide", label: "Socratic Guide", icon: "🧠", desc: "Helps you discover answers through guided questions" },
+  { id: "Interview Prep", label: "Interview Specialist", icon: "🎯", desc: "Rigorous technical mock questions & grading" },
+]
 
 export default function AIPromptPage() {
   const [activeTab, setActiveTab] = useState("chat")
+  const [mentorPersona, setMentorPersona] = useState<string>("Tuition Teacher")
   const [sessions, setSessions] = useState<ChatSession[]>([])
   const [currentSessionId, setCurrentSessionId] = useState<string>("")
   const [messages, setMessages] = useState<MessageItem[]>([DEFAULT_WELCOME_MSG])
@@ -101,9 +111,12 @@ export default function AIPromptPage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  // 1. Load chat sessions from localStorage on mount
+  // 1. Load chat sessions and persona from localStorage on mount
   useEffect(() => {
     try {
+      const savedPersona = localStorage.getItem(PERSONA_STORAGE_KEY)
+      if (savedPersona) setMentorPersona(savedPersona)
+
       const saved = localStorage.getItem(STORAGE_KEY)
       const savedActiveId = localStorage.getItem(ACTIVE_SESSION_KEY)
       if (saved) {
@@ -206,6 +219,7 @@ export default function AIPromptPage() {
         body: JSON.stringify({
           question: textToSend,
           userContext: studentContext,
+          mentorPersona,
           history: updatedMessages.map(m => ({ role: m.role, content: m.content })),
         }),
       })
@@ -347,22 +361,52 @@ export default function AIPromptPage() {
               <div className="lg:col-span-3 flex flex-col h-[650px]">
                 <Card className="bg-card border-border/50 flex-1 flex flex-col overflow-hidden">
                   <CardHeader className="border-b border-border/50 py-3 px-4">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <Bot className="h-5 w-5 text-primary" />
-                        AI Mentor Session
-                      </CardTitle>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-xs">Context Active (AI Engineer)</Badge>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 text-lg">
+                          🎓
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <CardTitle className="text-sm font-semibold">Alex • 1-on-1 AI Tutor</CardTitle>
+                            <span className="flex items-center gap-1 text-[11px] text-emerald-500 font-medium">
+                              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                              Active
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-muted-foreground">Tuition Teacher • Skill DNA Connected</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1 bg-muted/60 rounded-lg p-1 border border-border/50 overflow-x-auto">
+                        {PERSONAS.map(p => (
+                          <button
+                            key={p.id}
+                            onClick={() => {
+                              setMentorPersona(p.id)
+                              try { localStorage.setItem(PERSONA_STORAGE_KEY, p.id) } catch (_) {}
+                            }}
+                            className={cn(
+                              "px-2.5 py-1 text-xs rounded-md transition-all font-medium flex items-center gap-1.5 whitespace-nowrap",
+                              mentorPersona === p.id 
+                                ? "bg-primary text-primary-foreground shadow-xs" 
+                                : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                            )}
+                            title={p.desc}
+                          >
+                            <span>{p.icon}</span>
+                            <span>{p.label}</span>
+                          </button>
+                        ))}
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
                     {messages.map((msg, i) => (
-                      <MessageBubble 
-                        key={i} 
-                        message={msg} 
-                        index={i} 
+                      <MessageBubble
+                        key={i}
+                        message={msg}
+                        index={i}
                         isCopied={copiedIndex === i}
                         onCopy={() => copyToClipboard(msg.content, i)}
                         onActionClick={(action) => handleSuggestedClick(action)}
@@ -409,11 +453,11 @@ export default function AIPromptPage() {
                     </form>
                     <div className="flex flex-wrap gap-2 w-full">
                       {suggestedPrompts.slice(0, 4).map((prompt) => (
-                        <Button 
-                          key={prompt} 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => handleSuggestedClick(prompt)} 
+                        <Button
+                          key={prompt}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSuggestedClick(prompt)}
                           className="text-xs h-7"
                           disabled={isLoading}
                         >
@@ -478,13 +522,13 @@ export default function AIPromptPage() {
                   <p className="text-sm text-muted-foreground py-4 text-center">No conversation history yet. Start a chat to auto-save.</p>
                 ) : (
                   sessions.map((session) => (
-                    <div 
-                      key={session.id} 
+                    <div
+                      key={session.id}
                       onClick={() => handleSelectSession(session.id)}
                       className={cn(
                         "p-4 rounded-lg border transition-all cursor-pointer flex items-center justify-between group",
-                        session.id === currentSessionId 
-                          ? "bg-primary/10 border-primary/40 shadow-sm" 
+                        session.id === currentSessionId
+                          ? "bg-primary/10 border-primary/40 shadow-sm"
                           : "bg-muted/30 border-border/40 hover:bg-muted/60"
                       )}
                     >
@@ -501,17 +545,17 @@ export default function AIPromptPage() {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button 
-                          variant={session.id === currentSessionId ? "premium" : "outline"} 
-                          size="sm" 
+                        <Button
+                          variant={session.id === currentSessionId ? "premium" : "outline"}
+                          size="sm"
                           className="text-xs"
                           onClick={() => handleSelectSession(session.id)}
                         >
                           {session.id === currentSessionId ? "Resume" : "Open"}
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-80 group-hover:opacity-100"
                           onClick={(e) => handleDeleteSession(session.id, e)}
                         >
@@ -529,13 +573,51 @@ export default function AIPromptPage() {
             <Card className="bg-card border-border/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
+                  <GraduationCap className="h-5 w-5 text-primary" />
+                  Teaching Persona & Style
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">Select how you want your 1-on-1 AI Tutor to communicate with you</p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {PERSONAS.map(p => (
+                    <div
+                      key={p.id}
+                      onClick={() => {
+                        setMentorPersona(p.id)
+                        try { localStorage.setItem(PERSONA_STORAGE_KEY, p.id) } catch (_) {}
+                      }}
+                      className={cn(
+                        "p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-3",
+                        mentorPersona === p.id 
+                          ? "border-primary bg-primary/5 shadow-xs" 
+                          : "border-border/60 hover:border-primary/40 bg-card"
+                      )}
+                    >
+                      <span className="text-2xl p-2 rounded-lg bg-muted/60">{p.icon}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-semibold text-sm">{p.label}</h4>
+                          {mentorPersona === p.id && <Badge variant="premium" className="text-[10px]">Active</Badge>}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">{p.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5" />
-                  Mentor Context Settings
+                  Skill DNA Context Injected
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
-                  <h4 className="font-semibold">Context injected into AI reasoning:</h4>
+                  <h4 className="font-semibold text-sm">Real-time parameters supplied to your tutor:</h4>
                   <ContextToggle label="Skill DNA Profile & Proficiency Scores" enabled />
                   <ContextToggle label="Critical & Major Gap Analysis" enabled />
                   <ContextToggle label="Active 12-Week Learning Roadmap" enabled />
@@ -551,13 +633,13 @@ export default function AIPromptPage() {
   )
 }
 
-function MessageBubble({ 
-  message, 
-  index, 
-  isCopied, 
-  onCopy, 
-  onActionClick 
-}: { 
+function MessageBubble({
+  message,
+  index,
+  isCopied,
+  onCopy,
+  onActionClick
+}: {
   message: MessageItem
   index: number
   isCopied: boolean
@@ -568,8 +650,8 @@ function MessageBubble({
   return (
     <div className={cn("flex gap-3", isUser && "justify-end")}>
       {!isUser && (
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary flex-shrink-0">
-          <Bot className="h-4 w-4" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary border border-primary/20 flex-shrink-0 text-sm">
+          🎓
         </div>
       )}
       <div className={cn("flex-1 max-w-2xl", isUser && "text-right")}>
