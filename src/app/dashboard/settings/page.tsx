@@ -587,6 +587,15 @@ export default function SettingsPage() {
                   <NotificationToggle label="Weekly Progress Digest" description="Summary of your weekly learning progress" enabled={notifications.weeklyDigest} onChange={(v) => setNotifications({...notifications, weeklyDigest: v})} />
                   <NotificationToggle label="Skill Assessment Updates" description="When skill assessments are ready or updated" enabled={notifications.skillUpdates} onChange={(v) => setNotifications({...notifications, skillUpdates: v})} />
                   <NotificationToggle label="Mentor Messages" description="New responses from your AI mentor" enabled={notifications.mentorMessages} onChange={(v) => setNotifications({...notifications, mentorMessages: v})} />
+                  <NotificationToggle label="Job Alerts" description="New job matches and recommendations" enabled={notifications.jobAlerts} onChange={(v) => setNotifications({...notifications, jobAlerts: v})} />
+                </div>
+                <div className="space-y-4 pt-4 border-t border-border/50">
+                  <h4 className="font-semibold text-white">Push Notifications</h4>
+                  <NotificationToggle label="Enable Push Notifications" description="Receive real-time notifications in your browser" enabled={notifications.push} onChange={(v) => setNotifications({...notifications, push: v})} />
+                </div>
+                <div className="space-y-4 pt-4 border-t border-border/50">
+                  <h4 className="font-semibold text-white">General</h4>
+                  <NotificationToggle label="Email Updates" description="Receive occasional product updates and tips via email" enabled={notifications.email} onChange={(v) => setNotifications({...notifications, email: v})} />
                 </div>
               </CardContent>
             </Card>
