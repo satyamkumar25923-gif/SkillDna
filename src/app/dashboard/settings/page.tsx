@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
@@ -40,12 +41,15 @@ import {
   Briefcase,
   Award,
   CheckCircle,
-  Upload
+  Upload,
+  X
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useUserProfile, computeInitials } from "@/lib/user-profile-context"
 
 export default function SettingsPage() {
+  const { profile, updatePersonal, updateProfilePhoto, removeProfilePhoto, updateCareer, updateSocial } = useUserProfile()
   const [activeTab, setActiveTab] = useState("profile")
   const [isSaving, setIsSaving] = useState(false)
   const [theme, setTheme] = useState<"light" | "dark" | "system">("system")
@@ -63,33 +67,8 @@ export default function SettingsPage() {
     showSkills: true,
     analytics: true,
   })
-  const [profile, setProfile] = useState({
-    name: "Satyam Kumar",
-    email: "satyam@example.com",
-    bio: "Aspiring AI Engineer passionate about ML and building intelligent systems.",
-    location: "Bangalore, India",
-    website: "https://satyam.dev",
-    linkedin: "example.com",
-    github: "example.com",
-    twitter: "example.com",
-  })
 
-  useEffect(() => {
-    const saved = localStorage.getItem("skilldna-profile")
-    if (saved) {
-      try {
-        setProfile(JSON.parse(saved))
-      } catch (e) {}
-    }
-  }, [])
-
-  const handleSave = async () => {
-    setIsSaving(true)
-    await new Promise(r => setTimeout(r, 1000))
-    localStorage.setItem("skilldna-profile", JSON.stringify(profile))
-    window.dispatchEvent(new Event("profile-updated"))
-    setIsSaving(false)
-  }
+  const initials = computeInitials(profile.personal.fullName)
 
   return (
     <DashboardLayout>
@@ -99,9 +78,9 @@ export default function SettingsPage() {
             <h1 className="text-2xl font-bold">Settings</h1>
             <p className="text-muted-foreground">Manage your account, preferences, and privacy</p>
           </div>
-          <Button variant="premium" onClick={handleSave} disabled={isSaving}>
+          <Button variant="premium" onClick={() => {}} disabled={isSaving}>
             <Save className="mr-2 h-4 w-4" />
-            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Save Changes"}
+            Saved Automatically
           </Button>
         </div>
 
@@ -124,22 +103,57 @@ export default function SettingsPage() {
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-center flex-col text-center">
                       <Avatar className="h-24 w-24 mb-3">
-                        <AvatarImage src="" alt="Profile" />
-                        <AvatarFallback className="text-2xl">SK</AvatarFallback>
+                        {profile.profilePhoto.url ? (
+                          <AvatarImage src={profile.profilePhoto.url} alt="Profile" />
+                        ) : (
+                          <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-700 text-white font-bold text-2xl">
+                            {initials}
+                          </AvatarFallback>
+                        )}
                       </Avatar>
-                      <h3 className="font-semibold text-lg">{profile.name}</h3>
-                      <p className="text-sm text-muted-foreground">{profile.email}</p>
+                      <h3 className="font-semibold text-lg">{profile.personal.fullName || "Your Name"}</h3>
+                      <p className="text-sm text-muted-foreground">{profile.personal.email || "your@email.com"}</p>
                     </div>
                     <div className="flex flex-col gap-2 text-center">
-                      <Button variant="outline" className="w-full">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id="photo-upload"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            if (!file.type.startsWith("image/")) {
+                              alert("Please select an image file")
+                              return
+                            }
+                            if (file.size > 5 * 1024 * 1024) {
+                              alert("Image size must be less than 5MB")
+                              return
+                            }
+                            const reader = new FileReader()
+                            reader.onload = (event) => {
+                              const result = event.target?.result as string
+                              updateProfilePhoto(result)
+                            }
+                            reader.readAsDataURL(file)
+                          }
+                        }}
+                      />
+                      <Button variant="outline" className="w-full" onClick={() => document.getElementById('photo-upload')?.click()}>
                         <Upload className="mr-2 h-4 w-4" />
                         Change Photo
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-destructive">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Remove Photo
-                      </Button>
+                      {profile.profilePhoto.url && (
+                        <Button variant="ghost" size="sm" className="text-destructive" onClick={removeProfilePhoto}>
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Remove Photo
+                        </Button>
+                      )}
                     </div>
+                    <p className="text-xs text-muted-foreground text-center">
+                      If you remove your photo, your initials ({initials}) will be displayed instead.
+                    </p>
                   </CardContent>
                 </Card>
 
@@ -148,10 +162,10 @@ export default function SettingsPage() {
                     <CardTitle>Social Links</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <SocialInput label="LinkedIn" icon={LinkedinIcon} value={profile.linkedin} onChange={(v) => setProfile({...profile, linkedin: v})} placeholder="example.h" prefix="linkedin.com/in/" />
-                    <SocialInput label="GitHub" icon={GitBranch} value={profile.github} onChange={(v) => setProfile({...profile, github: v})} placeholder="example.h" prefix="github.com/" />
-                    <SocialInput label="Twitter/X" icon={TwitterIcon} value={profile.twitter} onChange={(v) => setProfile({...profile, twitter: v})} placeholder="example.h" prefix="x.com/" />
-                    <SocialInput label="Website" icon={Globe} value={profile.website} onChange={(v) => setProfile({...profile, website: v})} placeholder="https://satyam.dev" prefix="" />
+                    <SocialInput label="LinkedIn" icon={LinkedinIcon} value={profile.social.linkedin} onChange={(v) => updateSocial({ linkedin: v })} placeholder="example" prefix="linkedin.com/in/" />
+                    <SocialInput label="GitHub" icon={GitBranch} value={profile.social.github} onChange={(v) => updateSocial({ github: v })} placeholder="example" prefix="github.com/" />
+                    <SocialInput label="Twitter/X" icon={TwitterIcon} value={profile.social.twitter} onChange={(v) => updateSocial({ twitter: v })} placeholder="example" prefix="x.com/" />
+                    <SocialInput label="Website" icon={Globe} value={profile.social.website} onChange={(v) => updateSocial({ website: v })} placeholder="https://yourname.dev" prefix="" />
                   </CardContent>
                 </Card>
               </div>
@@ -167,21 +181,21 @@ export default function SettingsPage() {
                   <CardContent className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-4">
                       <FormField label="Full Name" icon={User}>
-                        <Input value={profile.name} onChange={(e) => setProfile({...profile, name: e.target.value})} placeholder="Your name" />
+                        <Input value={profile.personal.fullName} onChange={(e) => updatePersonal({ fullName: e.target.value })} placeholder="Your name" />
                       </FormField>
                       <FormField label="Email" icon={Mail}>
-                        <Input type="email" value={profile.email} onChange={(e) => setProfile({...profile, email: e.target.value})} placeholder="your@email.com" disabled />
+                        <Input type="email" value={profile.personal.email} onChange={(e) => updatePersonal({ email: e.target.value })} placeholder="your@email.com" />
                       </FormField>
                     </div>
                     <FormField label="Bio" icon={User}>
-                      <Textarea value={profile.bio} onChange={(e) => setProfile({...profile, bio: e.target.value})} placeholder="Tell us about yourself..." rows={3} />
+                      <Textarea value={profile.personal.bio} onChange={(e) => updatePersonal({ bio: e.target.value })} placeholder="Tell us about yourself..." rows={3} />
                     </FormField>
                     <div className="grid md:grid-cols-2 gap-4">
                       <FormField label="Location" icon={MapPin}>
-                        <Input value={profile.location} onChange={(e) => setProfile({...profile, location: e.target.value})} placeholder="City, Country" />
+                        <Input value={profile.personal.location} onChange={(e) => updatePersonal({ location: e.target.value })} placeholder="City, Country" />
                       </FormField>
                       <FormField label="Phone" icon={Phone}>
-                        <Input type="tel" placeholder="+91 98765 43210" />
+                        <Input type="tel" value={profile.personal.phone} onChange={(e) => updatePersonal({ phone: e.target.value })} placeholder="+91 98765 43210" />
                       </FormField>
                     </div>
                   </CardContent>
@@ -197,41 +211,98 @@ export default function SettingsPage() {
                   <CardContent className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <FormField label="Target Role" icon={Briefcase}>
-                        <Select value="ai-engineer" onValueChange={(v) => {}}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="ai-engineer">AI Engineer</SelectItem>
-                            <SelectItem value="ml-engineer">ML Engineer</SelectItem>
-                            <SelectItem value="data-scientist">Data Scientist</SelectItem>
-                            <SelectItem value="research-scientist">Research Scientist</SelectItem>
-                            <SelectItem value="software-engineer">Software Engineer</SelectItem>
+                        <Select
+                          value={profile.career.targetRole}
+                          onValueChange={(v) => updateCareer({ targetRole: v })}
+                        >
+                          <SelectTrigger><SelectValue placeholder="Select target role" /></SelectTrigger>
+                          <SelectContent className="bg-[#121722] border-border/60">
+                            <SelectItem value="AI Engineer">AI Engineer</SelectItem>
+                            <SelectItem value="Machine Learning Engineer">Machine Learning Engineer</SelectItem>
+                            <SelectItem value="Data Scientist">Data Scientist</SelectItem>
+                            <SelectItem value="Software Engineer">Software Engineer</SelectItem>
+                            <SelectItem value="Full Stack Developer">Full Stack Developer</SelectItem>
+                            <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
+                            <SelectItem value="Backend Developer">Backend Developer</SelectItem>
+                            <SelectItem value="DevOps Engineer">DevOps Engineer</SelectItem>
+                            <SelectItem value="MLOps Engineer">MLOps Engineer</SelectItem>
+                            <SelectItem value="Research Scientist">Research Scientist</SelectItem>
+                            <SelectItem value="Data Engineer">Data Engineer</SelectItem>
+                            <SelectItem value="AI Product Manager">AI Product Manager</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormField>
                       <FormField label="Experience Level" icon={Award}>
-                        <Select value="mid" onValueChange={(v) => {}}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="entry">Entry Level (0-2 years)</SelectItem>
-                            <SelectItem value="mid">Mid Level (2-5 years)</SelectItem>
-                            <SelectItem value="senior">Senior (5-8 years)</SelectItem>
-                            <SelectItem value="lead">Lead/Principal (8+ years)</SelectItem>
+                        <Select
+                          value={profile.career.experienceLevel}
+                          onValueChange={(v) => updateCareer({ experienceLevel: v })}
+                        >
+                          <SelectTrigger><SelectValue placeholder="Select experience level" /></SelectTrigger>
+                          <SelectContent className="bg-[#121722] border-border/60">
+                            <SelectItem value="Student / Entry Level (0-1 years)">Student / Entry Level (0-1 years)</SelectItem>
+                            <SelectItem value="Junior (1-2 years)">Junior (1-2 years)</SelectItem>
+                            <SelectItem value="Mid Level (2-5 years)">Mid Level (2-5 years)</SelectItem>
+                            <SelectItem value="Senior (5-8 years)">Senior (5-8 years)</SelectItem>
+                            <SelectItem value="Staff / Principal (8+ years)">Staff / Principal (8+ years)</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormField>
                     </div>
                     <FormField label="Preferred Industries" icon={Building}>
                       <div className="flex flex-wrap gap-2">
-                        {["Technology", "Finance", "Healthcare", "E-commerce", "Automotive", "Research"].map((ind) => (
-                          <Badge key={ind} variant="outline" className="gap">{ind}</Badge>
-                        ))}
+                        {["Technology", "Finance", "Healthcare", "E-commerce", "Automotive", "Research"].map((industry) => {
+                          const selected = profile.career.preferredIndustries.includes(industry)
+                          return (
+                            <button
+                              key={industry}
+                              type="button"
+                              onClick={() => {
+                                const updated = selected
+                                  ? profile.career.preferredIndustries.filter((i) => i !== industry)
+                                  : [...profile.career.preferredIndustries, industry]
+                                updateCareer({ preferredIndustries: updated })
+                              }}
+                              className={cn(
+                                "flex items-center gap-2 p-3 rounded-xl border text-left text-sm font-medium transition-all",
+                                selected
+                                  ? "bg-blue-600/15 border-blue-500 text-white shadow-sm"
+                                  : "bg-background/40 border-border/50 text-muted-foreground hover:bg-muted/40 hover:text-white"
+                              )}
+                            >
+                              <span className={cn("h-4 w-4 rounded border flex-shrink-0", selected ? "bg-blue-500 border-blue-500" : "border-border/50")} />
+                              <span>{industry}</span>
+                            </button>
+                          )
+                        })}
                       </div>
                     </FormField>
                     <FormField label="Work Preference" icon={Globe}>
                       <div className="flex flex-wrap gap-2">
-                        {["Remote", "Hybrid", "On-site", "Relocation Open"].map((pref) => (
-                          <Badge key={pref} variant="outline" className="gap">{pref}</Badge>
-                        ))}
+                        {["Remote", "Hybrid", "On-site", "Relocation Open"].map((pref) => {
+                          const selected = profile.career.workPreference.includes(pref)
+                          return (
+                            <button
+                              key={pref}
+                              type="button"
+                              onClick={() => {
+                                const updated = selected
+                                  ? profile.career.workPreference.filter((p) => p !== pref)
+                                  : [...profile.career.workPreference, pref]
+                                updateCareer({ workPreference: updated })
+                              }}
+                              className={cn(
+                                "flex items-center gap-2 p-3 rounded-xl border text-left text-sm font-medium transition-all",
+                                selected
+                                  ? "bg-purple-600/15 border-purple-500 text-white shadow-sm"
+                                  : "bg-background/40 border-border/50 text-muted-foreground hover:bg-muted/40 hover:text-white"
+                              )}
+                            >
+                              <span className={cn("h-4 w-4 rounded border flex-shrink-0", selected ? "bg-purple-500 border-purple-500" : "border-border/50")} />
+                              <span>{pref}</span>
+                            </button>
+                          )
+                        })}
                       </div>
                     </FormField>
                   </CardContent>

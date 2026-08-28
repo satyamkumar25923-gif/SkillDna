@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useUserProfile, computeInitials } from "@/lib/user-profile-context"
 import {
   LayoutDashboard,
   Dna,
@@ -48,16 +49,33 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+  const { profile } = useUserProfile()
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  const session = {
-    user: {
-      name: "Satyam Kumar",
-      email: "satyam@example.com",
-      image: ""
+  const initials = computeInitials(profile.personal.fullName)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsLoaded(true)
     }
-  }
+  }, [])
 
-  const closeMobileMenu = () => setMobileMenuOpen(false)
+  useEffect(() => {
+    if (isLoaded && typeof window !== "undefined") {
+      // Redirect to onboarding if not completed and not already on onboarding/register/auth pages
+      if (!profile.isOnboardingComplete && 
+          pathname !== "/onboarding" && 
+          pathname !== "/register" &&
+          !pathname.startsWith("/auth")) {
+        router.push("/onboarding")
+      }
+    }
+  }, [isLoaded, pathname, profile.isOnboardingComplete, router])
+
+  if (!isLoaded) {
+    return <div className="flex h-screen bg-background" />
+  }
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -179,14 +197,17 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <div className="p-4 border-t border-border/50 bg-card/30 flex flex-col gap-3">
             <div className="flex items-center gap-3 px-2">
               <Avatar className="h-10 w-10 border border-border">
-                <AvatarImage src={session?.user?.image || ""} />
-                <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                  {session?.user?.name?.[0] || "U"}
-                </AvatarFallback>
+                {profile.profilePhoto.url ? (
+                  <AvatarImage src={profile.profilePhoto.url} alt={profile.personal.fullName} />
+                ) : (
+                  <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                    {initials}
+                  </AvatarFallback>
+                )}
               </Avatar>
               <div className="flex flex-col min-w-0">
-                <p className="text-sm font-semibold truncate">{session?.user?.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{session?.user?.email}</p>
+                <p className="text-sm font-semibold truncate">{profile.personal.fullName || "User"}</p>
+                <p className="text-xs text-muted-foreground truncate">{profile.personal.email || "user@example.com"}</p>
               </div>
             </div>
 
@@ -240,7 +261,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
               <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-muted/50 border border-border/50">
                 <Target className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">AI Engineer</span>
+                <span className="text-sm font-medium">{profile.career.targetRole || "AI Engineer"}</span>
                 <span className="px-2 py-0.5 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                   67% Ready
                 </span>
@@ -250,16 +271,21 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
-                      <AvatarFallback>{session?.user?.name?.[0] || "U"}</AvatarFallback>
+                      {profile.profilePhoto.url ? (
+                        <AvatarImage src={profile.profilePhoto.url} alt={profile.personal.fullName} />
+                      ) : (
+                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">
+                          {initials}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">{session?.user?.name || "User"}</p>
-                      <p className="text-xs text-muted-foreground">{session?.user?.email}</p>
+                      <p className="text-sm font-medium">{profile.personal.fullName || "User"}</p>
+                      <p className="text-xs text-muted-foreground">{profile.personal.email || "user@example.com"}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
