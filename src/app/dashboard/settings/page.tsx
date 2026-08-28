@@ -4,14 +4,12 @@ import { useState, useRef } from "react"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { 
@@ -30,10 +28,8 @@ import {
   GitBranch,
   MessageSquare as TwitterIcon,
   Save,
-  Download,
   Loader2,
   Trash2,
-  AlertTriangle,
   Building,
   Target,
   MapPin,
@@ -559,7 +555,7 @@ export default function SettingsPage() {
                         key={t.value}
                         variant={theme === t.value ? "premium" : "outline"}
                         className="flex flex-col items-start gap-2 h-auto p-4 bg-background/50 border-border/60 text-left"
-                        onClick={() => setTheme(t.value as any)}
+                        onClick={() => setTheme(t.value as "light" | "dark" | "system")}
                       >
                         <t.icon className="h-5 w-5 text-blue-400" />
                         <span className="font-semibold">{t.label}</span>
@@ -672,7 +668,7 @@ export default function SettingsPage() {
 
 function SocialField({ label, icon: Icon, value, onChange, placeholder }: {
   label: string
-  icon: any
+  icon: React.ComponentType<{ className?: string }>
   value: string
   onChange: (val: string) => void
   placeholder: string
@@ -693,7 +689,12 @@ function SocialField({ label, icon: Icon, value, onChange, placeholder }: {
   )
 }
 
-function NotificationToggle({ label, description, enabled, onChange }: any) {
+function NotificationToggle({ label, description, enabled, onChange }: {
+  label: string
+  description: string
+  enabled: boolean
+  onChange: (enabled: boolean) => void
+}) {
   return (
     <div className="flex items-center justify-between p-3.5 rounded-xl bg-background/50 border border-border/50">
       <div className="flex-1">
@@ -705,7 +706,12 @@ function NotificationToggle({ label, description, enabled, onChange }: any) {
   )
 }
 
-function PrivacyOption({ label, description, selected, onSelect }: any) {
+function PrivacyOption({ label, description, selected, onSelect }: {
+  label: string
+  description: string
+  selected: boolean
+  onSelect: () => void
+}) {
   return (
     <button
       type="button"
