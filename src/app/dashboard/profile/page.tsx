@@ -42,7 +42,8 @@ import {
   AlertTriangle
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useState, useEffect } from "react"
+import { useUserProfile, computeInitials } from "@/lib/user-profile-context"
+import { useState } from "react"
 
 const profileData = {
   name: "Satyam Kumar",
@@ -91,39 +92,23 @@ const profileData = {
 }
 
 export default function ProfilePage() {
+  const { profile, updatePersonal, updateProfilePhoto, removeProfilePhoto, updateSocial } = useUserProfile()
   const [activeTab, setActiveTab] = useState("overview")
   const [isEditing, setIsEditing] = useState(false)
-  const [profile, setProfile] = useState({
-    name: "Satyam Kumar",
-    email: "satyam@example.com",
-    bio: "Aspiring AI Engineer passionate about ML and building intelligent systems.",
-    location: "Bangalore, India",
-    website: "https://satyam.dev",
-    linkedin: "example.h",
-    github: "example.h",
-    twitter: "example.h",
-  })
-
-  useEffect(() => {
-    const saved = localStorage.getItem("skilldna-profile")
-    if (saved) {
-      try {
-        setProfile(JSON.parse(saved))
-      } catch (e) {}
-    }
-  }, [])
+  const initials = computeInitials(profile.personal.fullName)
 
   const mergedProfile = {
     ...profileData,
-    name: profile.name,
-    bio: profile.bio,
-    location: profile.location,
-    email: profile.email,
+    name: profile.personal.fullName || profileData.name,
+    role: profile.career.targetRole || profileData.role,
+    bio: profile.personal.bio || profileData.bio,
+    location: profile.personal.location || profileData.location,
+    email: profile.personal.email || profileData.email,
     social: {
-      linkedin: profile.linkedin.includes("linkedin.com") ? profile.linkedin : `linkedin.com/in/${profile.linkedin}`,
-      github: profile.github.includes("github.com") ? profile.github : `github.com/${profile.github}`,
-      twitter: profile.twitter.includes("x.com") || profile.twitter.includes("twitter.com") ? profile.twitter : `x.com/${profile.twitter}`,
-      website: profile.website,
+      linkedin: profile.social.linkedin || profileData.social.linkedin,
+      github: profile.social.github || profileData.social.github,
+      twitter: profile.social.twitter || profileData.social.twitter,
+      website: profile.social.website || profileData.social.website,
     }
   }
 
@@ -166,8 +151,13 @@ export default function ProfilePage() {
                 <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
                   <div className="relative">
                     <Avatar className="h-32 w-32">
-                      <AvatarImage src="" alt={mergedProfile.name} />
-                      <AvatarFallback className="text-4xl">SK</AvatarFallback>
+                      {profile.profilePhoto.url ? (
+                        <AvatarImage src={profile.profilePhoto.url} alt={mergedProfile.name} />
+                      ) : (
+                        <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-700 text-white font-bold text-4xl">
+                          {initials || "SK"}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                     {isEditing && (
                       <Button variant="default" size="icon" className="absolute bottom-2 right-2 h-10 w-10 bg-gradient-to-r from-blue-500 to-indigo-600">
