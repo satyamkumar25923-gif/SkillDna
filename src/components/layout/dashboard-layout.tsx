@@ -44,19 +44,18 @@ const navigation = [
   { name: "Subscription", href: "/dashboard/subscription", icon: Crown },
 ]
 
-import { useUserProfile, computeInitials } from "@/lib/user-profile-context"
-
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { profile } = useUserProfile()
   
-  const userName = profile.personal.fullName || "User"
-  const userEmail = profile.personal.email || "user@example.com"
-  const userRole = profile.career.targetRole || "AI Engineer"
-  const userPhoto = profile.profilePhoto.url
-  const userInitials = computeInitials(userName)
+  const session = {
+    user: {
+      name: "Satyam Kumar",
+      email: "satyam@example.com",
+      image: ""
+    }
+  }
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
 
@@ -180,17 +179,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <div className="p-4 border-t border-border/50 bg-card/30 flex flex-col gap-3">
             <div className="flex items-center gap-3 px-2">
               <Avatar className="h-10 w-10 border border-border">
-                {userPhoto ? (
-                  <AvatarImage src={userPhoto} alt={userName} />
-                ) : (
-                  <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                    {userInitials}
-                  </AvatarFallback>
-                )}
+                <AvatarImage src={session?.user?.image || ""} />
+                <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                  {session?.user?.name?.[0] || "U"}
+                </AvatarFallback>
               </Avatar>
               <div className="flex flex-col min-w-0">
-                <p className="text-sm font-semibold truncate">{userName}</p>
-                <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
+                <p className="text-sm font-semibold truncate">{session?.user?.name}</p>
+                <p className="text-xs text-muted-foreground truncate">{session?.user?.email}</p>
               </div>
             </div>
 
@@ -244,7 +240,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
               <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-muted/50 border border-border/50">
                 <Target className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">{userRole}</span>
+                <span className="text-sm font-medium">AI Engineer</span>
                 <span className="px-2 py-0.5 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                   67% Ready
                 </span>
@@ -254,19 +250,16 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                     <Avatar className="h-9 w-9">
-                      {userPhoto ? (
-                        <AvatarImage src={userPhoto} alt={userName} />
-                      ) : (
-                        <AvatarFallback>{userInitials}</AvatarFallback>
-                      )}
+                      <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
+                      <AvatarFallback>{session?.user?.name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">{userName}</p>
-                      <p className="text-xs text-muted-foreground">{userEmail}</p>
+                      <p className="text-sm font-medium">{session?.user?.name || "User"}</p>
+                      <p className="text-xs text-muted-foreground">{session?.user?.email}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />

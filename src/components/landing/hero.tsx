@@ -33,7 +33,7 @@ export function LandingHero() {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in slide-up-2" style={{ animationDelay: '300ms' }}>
-            <Link href="/register">
+            <Link href="/dashboard">
               <Button size="xl" variant="premium" className="group">
                 Build My Skill DNA
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />

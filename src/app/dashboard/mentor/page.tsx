@@ -128,7 +128,7 @@ export default function AIPromptPage() {
           <TabsContent value="chat" className="space-y-6">
             <div className="grid lg:grid-cols-4 gap-6">
               <div className="lg:col-span-3 flex flex-col h-[600px]">
-                <Card className="bg-card border-border/50 flex-1 flex flex-col relative">
+                <Card className="bg-card border-border/50 flex-1 flex flex-col">
                   <CardHeader className="border-b border-border/50">
                     <div className="flex items-center justify-between">
                       <CardTitle className="flex items-center gap-2">
@@ -141,7 +141,7 @@ export default function AIPromptPage() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 pb-16">
+                  <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
                     {messages.map((msg, i) => (
                       <MessageBubble key={i} message={msg} />
                     ))}
@@ -160,39 +160,28 @@ export default function AIPromptPage() {
                       </div>
                     )}
                   </CardContent>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:px-6 pointer-events-none">
-                    <div className="max-w-4xl mx-auto pointer-events-auto">
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {suggestedPrompts.slice(0, 4).map((prompt) => (
-                          <Button key={prompt} variant="outline" size="sm" onClick={() => handleSuggestedClick(prompt)} className="text-xs">
-                            {prompt}
-                          </Button>
-                        ))}
-                      </div>
-                      <form onSubmit={handleSend} className="relative">
-                        <div className="relative bg-slate-950/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-2 sm:p-3 transition-all duration-200 hover:border-slate-600/50 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20">
-                          <Button
-                            type="submit"
-                            variant="premium"
-                            size="icon"
-                            disabled={isLoading || !input.trim()}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 flex-shrink-0 z-10 h-8 w-8 rounded-full shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-shadow"
-                          >
-                            <Send className="h-4 w-4" />
-                          </Button>
-                          <Textarea
-                            placeholder="Ask about learning paths, interviews, projects, or career decisions..."
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            className="w-full min-h-[56px] max-h-48 resize-none pl-14 pr-4 py-2 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
-                            rows={1}
-                            disabled={isLoading}
-                            style={{ fontSize: '15px', lineHeight: '1.5' }}
-                          />
-                        </div>
-                      </form>
+                  <CardFooter className="border-t border-border/50 p-4">
+                    <form onSubmit={handleSend} className="flex items-end gap-3">
+                      <Textarea
+                        placeholder="Ask about learning paths, interviews, projects, or career decisions..."
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        className="flex-1 min-h-[44px] max-h-32 resize-none pr-10"
+                        rows={1}
+                        disabled={isLoading}
+                      />
+                      <Button type="submit" variant="premium" size="icon" disabled={isLoading || !input.trim()}>
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </form>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {suggestedPrompts.slice(0, 4).map((prompt) => (
+                        <Button key={prompt} variant="outline" size="sm" onClick={() => handleSuggestedClick(prompt)} className="text-xs">
+                          {prompt}
+                        </Button>
+                      ))}
                     </div>
-                  </div>
+                  </CardFooter>
                 </Card>
               </div>
 
@@ -270,7 +259,7 @@ export default function AIPromptPage() {
                   <ContextToggle label="Learning Roadmap" enabled />
                   <ContextToggle label="Project Portfolio" enabled />
                   <ContextToggle label="Job Preferences" enabled />
-                  <ContextToggle label="Interview History" disabled />
+                  <ContextToggle label="Interview History" enabled={false} />
                 </div>
                 <div className="border-t border-border/50 pt-4">
                   <h4 className="font-semibold mb-4">Mentor Personality</h4>
