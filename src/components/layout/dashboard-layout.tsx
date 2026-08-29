@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -13,8 +13,8 @@ import {
   Dna,
   Search,
   MapPin,
-  Briefcase,
   Code,
+  Briefcase,
   Newspaper,
   Bot,
   TrendingUp,
@@ -33,7 +33,10 @@ import {
   Award,
   Briefcase as BriefcaseIcon,
   CheckCircle,
-  Clock
+  Clock,
+  Sun,
+  Moon,
+  Monitor
 } from "lucide-react"
 
 const navigation = [
@@ -252,6 +255,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="relative">

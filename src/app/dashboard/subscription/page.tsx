@@ -65,12 +65,12 @@ const plans = [
     cta: "Current Plan",
     ctaVariant: "outline",
   },
-  {
-    id: "premium",
-    name: "Premium",
-    price: "$19",
-    period: "/month",
-    description: "For serious learners who want to accelerate their career",
+{
+      id: "premium",
+      name: "Premium",
+      price: "₹49",
+      period: "/month",
+      description: "For serious learners who want to accelerate their career",
     icon: Crown,
     color: "text-amber-400",
     bgColor: "bg-amber-500/10 border-amber-500/20",
@@ -451,7 +451,7 @@ const faqs = [
   },
   {
     q: "Is there a student discount?",
-    a: "Yes! Students with a valid .edu email get 50% off Premium ($9.50/month). Verify your student status in Settings."
+    a: "Yes! Students with a valid .edu email get 50% off Premium (₹24.50/month). Verify your student status in Settings."
   },
   {
     q: "How does institutional licensing work?",

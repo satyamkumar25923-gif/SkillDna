@@ -44,15 +44,17 @@ import {
   Upload,
   X
 } from "lucide-react"
+import { useTheme } from "next-themes"
 import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useUserProfile, computeInitials } from "@/lib/user-profile-context"
 
 export default function SettingsPage() {
   const { profile, updatePersonal, updateProfilePhoto, removeProfilePhoto, updateCareer, updateSocial } = useUserProfile()
+  const { theme, setTheme, resolvedTheme } = useTheme()
   const [activeTab, setActiveTab] = useState("profile")
   const [isSaving, setIsSaving] = useState(false)
-  const [theme, setTheme] = useState<"light" | "dark" | "system">("system")
+  const [mounted, setMounted] = useState(false)
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -69,6 +71,10 @@ export default function SettingsPage() {
   })
 
   const initials = computeInitials(profile.personal.fullName)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <DashboardLayout>
@@ -320,43 +326,56 @@ export default function SettingsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div>
-                  <label className="text-sm font-medium mb-3 block">Theme</label>
+                {!mounted ? (
                   <div className="grid grid-cols-3 gap-4">
-                    {[
-                      { value: "light", label: "Light", icon: Sun, desc: "Always light mode" },
-                      { value: "dark", label: "Dark", icon: Moon, desc: "Always dark mode" },
-                      { value: "system", label: "System", icon: Monitor, desc: "Match system setting" },
-                    ].map((t) => (
+                    {["light", "dark", "system"].map((t) => (
                       <Button
-                        key={t.value}
-                        variant={theme === t.value ? "premium" : "outline"}
+                        key={t}
+                        variant="outline"
                         className="flex flex-col items-start gap-2 h-auto p-4"
-                        onClick={() => setTheme(t.value as any)}
+                        disabled
                       >
-                        <t.icon className="h-5 w-5" />
-                        <span className="font-medium">{t.label}</span>
-                        <span className="text-xs text-muted-foreground">{t.desc}</span>
+                        <span className="font-medium capitalize">{t}</span>
+                        <span className="text-xs text-muted-foreground">Loading...</span>
                       </Button>
                     ))}
                   </div>
-                </div>
+                ) : (
+                  <>
+                    <div>
+                      <label className="text-sm font-medium mb-3 block">Theme</label>
+                      <div className="grid grid-cols-3 gap-4">
+                        {[
+                          { value: "light", label: "Light", icon: Sun, desc: "Always light mode" },
+                          { value: "dark", label: "Dark", icon: Moon, desc: "Always dark mode" },
+                          { value: "system", label: "System", icon: Monitor, desc: "Match system setting" },
+                        ].map((t) => (
+                          <Button
+                            key={t.value}
+                            variant={theme === t.value ? "premium" : "outline"}
+                            className="flex flex-col items-start gap-2 h-auto p-4"
+                            onClick={() => setTheme(t.value)}
+                          >
+                            <t.icon className="h-5 w-5" />
+                            <span className="font-medium">{t.label}</span>
+                            <span className="text-xs text-muted-foreground">{t.desc}</span>
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
 
-                <Separator />
+                    <Separator />
 
-                <div>
-                  <label className="text-sm font-medium mb-3 block">Accent Color</label>
-                  <div className="flex flex-wrap gap-3">
-                    {["#3b82f6", "#a855f7", "#ec4899", "#06b6d4", "#f97316", "#22c55e", "#ef4444", "#f59e0b"].map((color) => (
-                      <button
-                        key={color}
-                        className={cn("h-10 w-10 rounded-lg border-2 transition-all", color === "#3b82f6" ? "border-primary" : "border-transparent")}
-                        style={{ backgroundColor: color }}
-                        onClick={() => {}}
-                      />
-                    ))}
-                  </div>
-                </div>
+                    <div>
+                      <label className="text-sm font-medium mb-3 block">
+                        Current Mode: <span className="font-normal capitalize">{resolvedTheme}</span>
+                      </label>
+                      <p className="text-sm text-muted-foreground">
+                        This is the currently active theme. In "System" mode, it follows your OS setting.
+                      </p>
+                    </div>
+                  </>
+                )}
 
                 <Separator />
 
