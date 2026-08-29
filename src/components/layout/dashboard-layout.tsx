@@ -50,6 +50,7 @@ const navigation = [
   { name: "Tech Intelligence", href: "/dashboard/tech-intelligence", icon: Newspaper },
   { name: "AI Mentor", href: "/dashboard/mentor", icon: Bot },
   { name: "Progress", href: "/dashboard/progress", icon: TrendingUp },
+  { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
   { name: "Subscription", href: "/dashboard/subscription", icon: Crown },
 ]
@@ -259,9 +260,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
             <div className="flex items-center gap-3">
               <Link href="/dashboard/notifications">
-                <Button variant="ghost" size="icon" className="relative" title="Notifications">
+                <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
                   <Bell className="h-5 w-5" />
-                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
+                  <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
                 </Button>
               </Link>
               <ThemeToggle />
@@ -368,10 +369,22 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard/settings" className="w-full">Settings</Link>
+                    <Link href="/dashboard/notifications" className="w-full flex items-center gap-2">
+                      <Bell className="h-4 w-4" />
+                      <span>Notifications</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard/profile" className="w-full">Profile</Link>
+                    <Link href="/dashboard/settings" className="w-full flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/profile" className="w-full flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>

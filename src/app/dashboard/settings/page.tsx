@@ -585,7 +585,7 @@ export default function SettingsPage() {
                   <div className="space-y-3">
                     {[
                       { name: "Google", icon: "G", connected: true, email: "satyam@gmail.com" },
-                      { name: "GitHub", icon: "GH", connected: true, email: profile.github },
+                      { name: "GitHub", icon: "GH", connected: true, email: profile.social.github },
                       { name: "LinkedIn", icon: "in", connected: false, email: "" },
                     ].map((acc) => (
                       <div key={acc.name} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border/50">
