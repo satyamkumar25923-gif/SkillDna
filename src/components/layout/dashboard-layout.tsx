@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -80,6 +81,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       }
     }
   }, [isLoaded, pathname, profile.isOnboardingComplete, router])
+
+  const closeMobileMenu = () => setMobileMenuOpen(false)
 
   if (!isLoaded) {
     return <div className="flex h-screen bg-background" />
