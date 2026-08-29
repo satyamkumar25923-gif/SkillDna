@@ -255,6 +255,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="flex items-center gap-3">
+              <Link href="/dashboard/notifications">
+                <Button variant="ghost" size="icon" className="relative" title="Notifications">
+                  <Bell className="h-5 w-5" />
+                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
+                </Button>
+              </Link>
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
